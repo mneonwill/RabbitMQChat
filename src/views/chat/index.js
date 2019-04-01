@@ -1,6 +1,10 @@
 import { h, Component } from 'preact';
 import { bind } from 'decko';
+import Ink from 'react-ink';
+
 var Stomp = require('stompjs/lib/stomp.js').Stomp;
+
+import style from './styles.scss';
 
 export default class Chat extends Component {
   constructor(props) {
@@ -9,7 +13,8 @@ export default class Chat extends Component {
     this.userChatId = this.props.match.params.userChatId;
     this.rabbitClient = null;
     this.state = {
-      messageList: []
+      messageList: [],
+      userMessage: null
     };
   }
 
@@ -52,34 +57,59 @@ export default class Chat extends Component {
 
   @bind
   sendMessage(event) {
-    this.rabbitClient.send(
-      '/exchange/chat-exchange',
-      { 'content-type': 'text/plain' },
-      JSON.stringify({ userName: this.userChatId, content: 'Hello, World' })
-    );
+    event.preventDefault();
+
+    if (!this.state.userMessage) {
+      window.alert('You must write a message');
+    } else {
+      this.rabbitClient.send(
+        '/exchange/chat-exchange',
+        { 'content-type': 'text/plain' },
+        JSON.stringify({
+          userName: this.userChatId,
+          content: this.state.userMessage
+        })
+      );
+    }
   }
 
   @bind
   renderMessageList() {
-    {
-      this.state.messageList.map(message => {
-        return (
-          <span>
-            {message.userName}: {message.content}
-          </span>
-        );
-      });
-    }
+    return this.state.messageList.map(message => {
+      return (
+        <span>
+          <strong>{message.userName}</strong>: {message.content}
+        </span>
+      );
+    });
+  }
+
+  @bind
+  onUserMessageInput(event) {
+    const newMessge = event.target.value;
+
+    this.setState({ userMessage: newMessge });
   }
 
   render() {
     return (
-      <div>
-        <div class="flex flex-dc">{this.renderMessageList()}</div>
-        <div>
-          <textarea placeholder="Type your message" />
-          <button onClick={this.sendMessage}>Send Mesage</button>
+      <div class={`flex flex-dc ${style.chatWrapper}`}>
+        <div class={`flex flex-dc ${style.messagesWrapper}`}>
+          {this.renderMessageList()}
         </div>
+        <form
+          onSubmit={this.sendMessage}
+          class={`flex ${style.userActionWrapper}`}
+        >
+          <textarea
+            onInput={this.onUserMessageInput}
+            placeholder="Type your message..."
+          />
+          <button onClick={this.sendMessage}>
+            <Ink />
+            Send Mesage
+          </button>
+        </form>
       </div>
     );
   }
