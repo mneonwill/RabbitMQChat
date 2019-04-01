@@ -9,6 +9,10 @@ export default class Chat extends Component {
     this.userChatId = this.props.match.params.userChatId;
 
     this.rabbitClient = null;
+
+    this.state = {
+      messageList: []
+    };
   }
 
   componentDidMount() {
@@ -27,14 +31,18 @@ export default class Chat extends Component {
   @bind
   onRabbitConnect() {
     console.log('Connected');
-    this.rabbitClient.subscribe('/exchange/chat-exchange', function(d) {
-      console.log(JSON.parse(d.body));
+    this.rabbitClient.subscribe('/exchange/chat-exchange', response => {
+      const newMessage = JSON.parse(response.body);
+
+      const newMessageArray = [...this.state.messageList];
+      newMessageArray.push(newMessage);
+      this.setState({ messageList: newMessageArray });
     });
   }
 
   @bind
   onRabbitConnectionError() {
-    console.warn('Error connecting');
+    console.error('Error connecting');
   }
 
   @bind
@@ -42,7 +50,7 @@ export default class Chat extends Component {
     this.rabbitClient.send(
       '/exchange/chat-exchange',
       { 'content-type': 'text/plain' },
-      JSON.stringify({ userName: this.userChatId, message: 'Hello, World' })
+      JSON.stringify({ userName: this.userChatId, content: 'Hello, World' })
     );
   }
 
@@ -50,6 +58,13 @@ export default class Chat extends Component {
     return (
       <div>
         <div class="flex flex-dc">
+          {this.state.messageList.map(message => {
+            return (
+              <span>
+                {message.userName}: {message.content}
+              </span>
+            );
+          })}
           <span>{this.userChatId}: Message 1</span>
           <span>{this.userChatId}: Message 2</span>
         </div>
