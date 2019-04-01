@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import { bind } from 'decko';
+import Ink from 'react-ink';
 
 import style from './styles.scss';
 
@@ -33,7 +34,7 @@ export default class Home extends Component {
     this.setState({ userName });
   }
 
-  render({}, { userName }) {
+  render() {
     return (
       <div class={`flex flex-full-center ${style.homeWrapper}`}>
         <div class="flex flex-dc flex-full-center">
@@ -42,8 +43,14 @@ export default class Home extends Component {
               type="text"
               placeholder="Type your username"
               onInput={this.onUserNameInputChange}
+              class={style.inputClass}
             />
-            <button type="submit" onClick={this.openNewChatWindow}>
+            <button
+              type="submit"
+              onClick={this.openNewChatWindow}
+              class={style.buttonClass}
+            >
+              <Ink />
               Open new chat window
             </button>
           </form>

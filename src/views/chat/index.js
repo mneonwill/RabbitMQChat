@@ -7,15 +7,17 @@ export default class Chat extends Component {
     super(props);
 
     this.userChatId = this.props.match.params.userChatId;
-
     this.rabbitClient = null;
-
     this.state = {
       messageList: []
     };
   }
 
   componentDidMount() {
+    this.createRabbitConnection();
+  }
+
+  createRabbitConnection() {
     var ws = new WebSocket('ws://localhost:15674/ws');
     this.rabbitClient = Stomp.over(ws);
 
@@ -28,16 +30,19 @@ export default class Chat extends Component {
     );
   }
 
-  @bind
-  onRabbitConnect() {
-    console.log('Connected');
-    this.rabbitClient.subscribe('/exchange/chat-exchange', response => {
+  subscribeToRabbitExchange(exchangeName) {
+    this.rabbitClient.subscribe(exchangeName, response => {
       const newMessage = JSON.parse(response.body);
 
       const newMessageArray = [...this.state.messageList];
       newMessageArray.push(newMessage);
       this.setState({ messageList: newMessageArray });
     });
+  }
+
+  @bind
+  onRabbitConnect() {
+    this.subscribeToRabbitExchange('/exchange/chat-exchange');
   }
 
   @bind
@@ -54,20 +59,23 @@ export default class Chat extends Component {
     );
   }
 
+  @bind
+  renderMessageList() {
+    {
+      this.state.messageList.map(message => {
+        return (
+          <span>
+            {message.userName}: {message.content}
+          </span>
+        );
+      });
+    }
+  }
+
   render() {
     return (
       <div>
-        <div class="flex flex-dc">
-          {this.state.messageList.map(message => {
-            return (
-              <span>
-                {message.userName}: {message.content}
-              </span>
-            );
-          })}
-          <span>{this.userChatId}: Message 1</span>
-          <span>{this.userChatId}: Message 2</span>
-        </div>
+        <div class="flex flex-dc">{this.renderMessageList()}</div>
         <div>
           <textarea placeholder="Type your message" />
           <button onClick={this.sendMessage}>Send Mesage</button>
