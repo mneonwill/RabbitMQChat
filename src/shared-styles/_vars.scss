@@ -1,0 +1,27 @@
+:global {
+    :root {
+        --base-br: 18px;
+        --header-height: 150px;
+
+        --radius: 0.25em;
+
+        --cscrollbar-thumb-bg-colour: hsla(0, 0%, 0%, 0.2);
+        --cscrollbar-track-bg-colour: hsla(0, 0%, 100%, 0.08);
+        --cscrollbar-width: 6px;
+        --cscrollbar-height: 6px;
+
+        --base-transition-timing: cubic-bezier(.25,1.43,.35,1.69);
+
+        --home-gradient: linear-gradient(to bottom, #00a2ff, #39b5fd);
+
+        --black-box-shadow: 0 3px 20px rgba(0,0,0,.05);
+
+        --color-primary: #ffffff;
+        --color-accent: #13AFF9;
+        --color-green: #45C826;
+        --color-secondary: #c5c5c5;
+        --color-secondary-lighter: #e1e5e6;
+        --color-tertiary: #F4F7F9;
+        --color-bg: #464646;
+    }
+}

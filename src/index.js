@@ -1,13 +1,15 @@
-import { h, render, Component } from "preact";
+import { h, render, Component } from 'preact';
 
-import ContentShell from "content-shell";
+import ContentShell from 'content-shell';
 
-const mountPoint = document.getElementById("mount-point");
+import './shared-styles/index.scss';
+
+const mountPoint = document.getElementById('mount-point');
 
 class App extends Component {
   render() {
-    return (<ContentShell / >);
+    return <ContentShell />;
   }
 }
 
-render(<App /> , mountPoint, mountPoint.lastElementChild);
+render(<App />, mountPoint, mountPoint.lastElementChild);
