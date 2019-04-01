@@ -47,7 +47,10 @@
         object-fit: contain;
     }
 
-    button, a, input, textarea { outline: none; }
+    button, a, input, textarea { 
+        outline: none;
+        font-family: inherit;
+    }
 
     button, select, textarea,
     input[type="button"], input[type="email"], input[type="number"],

@@ -4,6 +4,8 @@ import Ink from 'react-ink';
 
 var Stomp = require('stompjs/lib/stomp.js').Stomp;
 
+import Message from './message';
+
 import style from './styles.scss';
 
 export default class Chat extends Component {
@@ -75,13 +77,7 @@ export default class Chat extends Component {
 
   @bind
   renderMessageList() {
-    return this.state.messageList.map(message => {
-      return (
-        <span>
-          <strong>{message.userName}</strong>: {message.content}
-        </span>
-      );
-    });
+    return this.state.messageList.map(message => <Message message={message} />);
   }
 
   @bind
@@ -91,9 +87,13 @@ export default class Chat extends Component {
     this.setState({ userMessage: newMessge });
   }
 
+  // Can be further refactored into components but it's already 1:29am
   render() {
     return (
       <div class={`flex flex-dc ${style.chatWrapper}`}>
+        <div class={`flex flex-full-center ${style.userIdBadge}`}>
+          User ID: {this.userChatId}
+        </div>
         <div class={`flex flex-dc ${style.messagesWrapper}`}>
           {this.renderMessageList()}
         </div>
