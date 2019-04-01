@@ -14,6 +14,8 @@ export default class Home extends Component {
 
   @bind
   openNewChatWindow(event) {
+    event.preventDefault();
+
     if (!this.state.userName) {
       window.alert('You must provide a username');
     } else {
@@ -35,12 +37,16 @@ export default class Home extends Component {
     return (
       <div class={`flex flex-full-center ${style.homeWrapper}`}>
         <div class="flex flex-dc flex-full-center">
-          <input
-            type="text"
-            placeholder="Type your username"
-            onInput={this.onUserNameInputChange}
-          />
-          <button onClick={this.openNewChatWindow}>Open new chat window</button>
+          <form onSubmit={this.openNewChatWindow}>
+            <input
+              type="text"
+              placeholder="Type your username"
+              onInput={this.onUserNameInputChange}
+            />
+            <button type="submit" onClick={this.openNewChatWindow}>
+              Open new chat window
+            </button>
+          </form>
         </div>
       </div>
     );
