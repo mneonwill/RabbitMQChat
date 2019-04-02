@@ -29,6 +29,7 @@
 
     .messagesWrapper {
         flex: 1;
+        overflow-y: auto;
     }
 
     .userActionWrapper {
@@ -37,7 +38,8 @@
             flex: 1;
             margin: 0 12px;
             padding: 8px;
-            resize: none;
+            max-height: 100px;
+            resize: vertical;
         }
 
         button {

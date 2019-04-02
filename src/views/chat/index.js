@@ -32,8 +32,9 @@ export default class Chat extends Component {
 
   createRabbitConnection() {
     this.setState({ connectionInfo: 'Connecting...' });
-    var ws = new WebSocket(rabbitSocketUri);
-    this.rabbitClient = Stomp.over(ws);
+
+    const rabbitWebsocket = new WebSocket(rabbitSocketUri);
+    this.rabbitClient = Stomp.over(rabbitWebsocket);
 
     this.rabbitClient.connect(
       rabbitConnectionCredentials.username,
@@ -64,6 +65,7 @@ export default class Chat extends Component {
   @bind
   onRabbitConnectionError() {
     console.error('Error connecting');
+    this.setState({ connectionInfo: 'Error connecting' });
   }
 
   @bind
