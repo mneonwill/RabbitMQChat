@@ -21,7 +21,8 @@ export default class Chat extends Component {
     this.rabbitClient = null;
     this.state = {
       messageList: [],
-      userMessage: null
+      userMessage: null,
+      connectionInfo: 'Disconnected'
     };
   }
 
@@ -30,6 +31,7 @@ export default class Chat extends Component {
   }
 
   createRabbitConnection() {
+    this.setState({ connectionInfo: 'Connecting...' });
     var ws = new WebSocket(rabbitSocketUri);
     this.rabbitClient = Stomp.over(ws);
 
@@ -40,6 +42,8 @@ export default class Chat extends Component {
       this.onRabbitConnectionError,
       '/'
     );
+
+    this.setState({ connectionInfo: 'Connected' });
   }
 
   subscribeToRabbitExchange(exchangeName) {
@@ -101,6 +105,10 @@ export default class Chat extends Component {
         <div class={`flex flex-full-center ${style.userIdBadge}`}>
           User ID: {this.userChatId}
         </div>
+        <span class={`flex flex-full-center ${style.connectionInfo}`}>
+          {this.state.connectionInfo}
+        </span>
+
         <div class={`flex flex-dc ${style.messagesWrapper}`}>
           {this.renderMessageList()}
         </div>
