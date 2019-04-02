@@ -1,6 +1,11 @@
 import { h, Component } from 'preact';
 import { bind } from 'decko';
 import Ink from 'react-ink';
+import {
+  rabbitSocketUri,
+  rabbitConnectionCredentials,
+  rabbitConnectionExchange
+} from '../../scripts/vars';
 
 var Stomp = require('stompjs/lib/stomp.js').Stomp;
 
@@ -25,12 +30,12 @@ export default class Chat extends Component {
   }
 
   createRabbitConnection() {
-    var ws = new WebSocket('ws://localhost:15674/ws');
+    var ws = new WebSocket(rabbitSocketUri);
     this.rabbitClient = Stomp.over(ws);
 
     this.rabbitClient.connect(
-      'guest',
-      'guest',
+      rabbitConnectionCredentials.username,
+      rabbitConnectionCredentials.password,
       this.onRabbitConnect,
       this.onRabbitConnectionError,
       '/'
@@ -49,7 +54,7 @@ export default class Chat extends Component {
 
   @bind
   onRabbitConnect() {
-    this.subscribeToRabbitExchange('/exchange/chat-exchange');
+    this.subscribeToRabbitExchange(rabbitConnectionExchange);
   }
 
   @bind
@@ -61,16 +66,18 @@ export default class Chat extends Component {
   sendMessage(event) {
     event.preventDefault();
 
-    if (!this.state.userMessage) {
+    const data = {
+      userName: this.userChatId,
+      content: this.state.userMessage
+    };
+
+    if (!data.content) {
       window.alert('You must write a message');
     } else {
       this.rabbitClient.send(
-        '/exchange/chat-exchange',
+        rabbitConnectionExchange,
         { 'content-type': 'text/plain' },
-        JSON.stringify({
-          userName: this.userChatId,
-          content: this.state.userMessage
-        })
+        JSON.stringify(data)
       );
     }
   }
