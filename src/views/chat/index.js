@@ -63,7 +63,7 @@ export default class Chat extends Component {
   }
 
   @bind
-  sendMessage(event) {
+  async sendMessage(event) {
     event.preventDefault();
 
     const data = {
